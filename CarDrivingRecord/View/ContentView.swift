@@ -38,8 +38,8 @@ struct ContentView: View {
                     
                     Text("현재 속도 \(viewModel.locationService.speedDisplay)")
                     Text("평균 속도 \(viewModel.locationService.avgSpeedLabel)")
-                                        Text("최대 속도 \(viewModel.locationService.maxSpeedLabel)")
-                                        Text("최소 속도 \(viewModel.locationService.minSpeedLabel)")
+                    Text("최대 속도 \(viewModel.locationService.maxSpeedLabel)")
+                    Text("최소 속도 \(viewModel.locationService.minSpeedLabel)")
                     
                     Text("운행 거리 \(viewModel.locationService.distanceTraveled)")
                     
