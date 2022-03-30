@@ -194,6 +194,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         traveledDistance = 0
         
         DispatchQueue.main.async {
+            self.lonDisplay = ""
+            self.latDisplay = ""
             self.minSpeedLabel = "0"
             self.maxSpeedLabel = "0"
             self.headingDisplay = "None"
