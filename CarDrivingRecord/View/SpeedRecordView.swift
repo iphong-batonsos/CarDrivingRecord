@@ -73,7 +73,7 @@ struct DrivingRecordRow: View {
     var formatter: DateFormatter = DateFormatter()
     
     init(drivingData: DrivingRecord) {
-        self.formatter.dateFormat = "YY/MM/dd HH:mm:ss"
+        self.formatter.dateFormat = "MMM d yyyy, h:mm a"
         self.drivingData = drivingData
         print("Loading row \(drivingData)")
     }
@@ -87,11 +87,16 @@ struct DrivingRecordRow: View {
                 
                 if drivingData.rapidAcc {
                     Text("급가속")
+                        .foregroundColor(.red)
+                        .fontWeight(.semibold)
                 }
                 
                 if drivingData.rapidDec {
                     Text("급감속")
+                        .foregroundColor(.red)
+                        .fontWeight(.semibold)
                 }
+                
                 Spacer()
             }
             Divider()
