@@ -41,7 +41,19 @@ struct SpeedRecordView: View {
             }
             
             if locationService.speedArray.count > 0 {
-                LineView(data: locationService.speedArray, title: "") // legend is optional, use optional .padding()
+                ScrollView {
+                    
+                    LineView(data: locationService.speedArray, title: "") // legend is optional, use optional .padding()
+                        .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .topLeading)
+                    Divider()
+                        .padding()
+                    
+                    LazyVStack {
+                        ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
+                    }
+                    
+                    Spacer()
+                }
             }
             else{
                 VStack {
@@ -51,11 +63,44 @@ struct SpeedRecordView: View {
                     Spacer()
                 }
             }
-
         }
-     
+        
     }
 }
+
+struct DrivingRecordRow: View {
+    let drivingData: DrivingRecord
+    var formatter: DateFormatter = DateFormatter()
+    
+    init(drivingData: DrivingRecord) {
+        self.formatter.dateFormat = "YY/MM/dd HH:mm:ss"
+        self.drivingData = drivingData
+        print("Loading row \(drivingData)")
+    }
+    
+    var body: some View {
+        VStack {
+            HStack(alignment: .center, spacing: 10) {
+                
+                Text(formatter.string(from: drivingData.time))
+                Text("\(String(format: "%.0f", drivingData.speed)) km/h")
+                
+                if drivingData.rapidAcc {
+                    Text("급가속")
+                }
+                
+                if drivingData.rapidDec {
+                    Text("급감속")
+                }
+                Spacer()
+            }
+            Divider()
+        }
+        .frame(width: UIScreen.main.bounds.width - 20, height: 40)
+    }
+    
+}
+
 
 struct SpeedRecordView_Previews: PreviewProvider {
     static var previews: some View {

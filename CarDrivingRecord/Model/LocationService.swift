@@ -16,7 +16,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     @Published var traveledDistance: Double = 0
     @Published var drivingRecordArray: [DrivingRecord] = []
-    
+    @Published var speedArray: [Double]! = []
+
     @Published var rapidAccCount: Int = 0
     @Published var rapidDecCount: Int = 0
     
@@ -30,7 +31,6 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var avgSpeedLabel: String = ""
     
     @Published var rapidSpeed: Int = 10
-    @Published var speedArray: [Double]! = []
     
     override init() {
         super.init()
