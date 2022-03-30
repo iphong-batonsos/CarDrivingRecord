@@ -192,6 +192,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         drivingRecordArray = []
         traveledDistance = 0
+        rapidSpeed = 10
         
         DispatchQueue.main.async {
             self.lonDisplay = ""
