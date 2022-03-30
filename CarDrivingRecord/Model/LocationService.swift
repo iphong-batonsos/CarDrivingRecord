@@ -30,13 +30,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var avgSpeedLabel: String = ""
     
     @Published var rapidSpeed: Int = 10
-    
-    lazy var speedArray: [Double]! = {
-        print("Lazy var oldest initialized")
-        return self.drivingRecordArray.map {
-            $0.speed
-        }
-    }()
+    @Published var speedArray: [Double]! = []
     
     override init() {
         super.init()
@@ -139,6 +133,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             let drivingRecord = DrivingRecord(location: location, speed: currentSpeed, deviation: deviation, time: Date(), rapidAcc: rapidAcc, rapidDec: rapidDec)
             
             drivingRecordArray.append(drivingRecord)
+            speedArray.append(currentSpeed)
             
             print("drivingRecordArray", drivingRecordArray)
             
