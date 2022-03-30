@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LocationRecord: Hashable, Identifiable, Codable {
+struct Location: Hashable, Identifiable, Codable {
     var id = UUID()
     
     let latitude: Double
@@ -17,9 +17,15 @@ struct LocationRecord: Hashable, Identifiable, Codable {
 struct DrivingRecord: Hashable, Identifiable, Codable {
     var id = UUID()
     
+    let location: Location
+
     let speed: Double //(KPH)
     
+    let deviation: Double
+
     let time: Date
     
-    let location: LocationRecord
+    let rapidAcc: Bool
+    
+    let rapidDec: Bool
 }

@@ -14,9 +14,12 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     var locationManager: CLLocationManager = CLLocationManager()
     var lastLocation: CLLocation!
     
-    @Published var traveledDistance:Double = 0
-    @Published var arrayKPH: [Double]! = []
-
+    @Published var traveledDistance: Double = 0
+    @Published var drivingRecordArray: [DrivingRecord] = []
+    
+    @Published var rapidAccCount: Int = 0
+    @Published var rapidDecCount: Int = 0
+    
     @Published var speedDisplay: String = ""
     @Published var headingDisplay: String = ""
     @Published var latDisplay: String = ""
@@ -25,7 +28,16 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var minSpeedLabel: String = ""
     @Published var maxSpeedLabel: String = ""
     @Published var avgSpeedLabel: String = ""
-
+    
+    @Published var rapidSpeed: Int = 10
+    
+    lazy var speedArray: [Double]! = {
+        print("Lazy var oldest initialized")
+        return self.drivingRecordArray.map {
+            $0.speed
+        }
+    }()
+    
     override init() {
         super.init()
         
@@ -44,11 +56,11 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.showsBackgroundLocationIndicator = true
         // 위치 정확도 최고 설정
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-
+        
         // For use in foreground
         self.locationManager.requestWhenInUseAuthorization()
     }
-
+    
     // 1 mile = 5280 feet
     // Meter to miles = m * 0.00062137
     // 1 meter = 3.28084 feet
@@ -64,6 +76,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         if (location!.horizontalAccuracy > 0) {
             updateLocationInfo(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, speed: location!.speed, direction: location!.course)
         }
+        
         if lastLocation != nil {
             traveledDistance += lastLocation.distance(from: locations.last!)
             if traveledDistance < 1609 {
@@ -81,14 +94,14 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         lastLocation = locations.last
     }
-
+    
     func updateLocationInfo(latitude: CLLocationDegrees, longitude: CLLocationDegrees, speed: CLLocationSpeed, direction: CLLocationDirection) {
-        let speedToKPH = (speed * 3.6)
+        let currentSpeed = (speed * 3.6)
         let val = ((direction / 22.5) + 0.5);
         let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         let dir = arr[Int(val.truncatingRemainder(dividingBy: 16))]
         
-//        lonDisplay = coordinateString(latitude, longitude: longitude)
+        //        lonDisplay = coordinateString(latitude, longitude: longitude)
         
         DispatchQueue.main.async {
             self.lonDisplay = (String(format: "%.3f", longitude))
@@ -98,42 +111,86 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         print("\(self.lonDisplay), \(self.latDisplay)")
         
         // Checking if speed is less than zero
-        if (speedToKPH > 0) {
-            speedDisplay = (String(format: "%.0f km/h", speedToKPH))
-            arrayKPH.append(speedToKPH)
-            let lowSpeed = arrayKPH.min()
-            let highSpeed = arrayKPH.max()
+        if (currentSpeed > 0) {
+            speedDisplay = (String(format: "%.0f km/h", currentSpeed))
+            
+            let location = Location(latitude: latitude, longitude: longitude)
+            
+            var deviation: Double = 0
+            var rapidAcc: Bool = false
+            var rapidDec: Bool = false
+            
+            if let lastSpeed = speedArray.last {
+                deviation = currentSpeed - lastSpeed
+                
+                if deviation >= Double(self.rapidSpeed) {
+                    rapidAcc = true
+                    DispatchQueue.main.async {
+                        self.rapidAccCount += 1
+                    }
+                } else if deviation <= Double(-self.rapidSpeed) {
+                    rapidDec = true
+                    DispatchQueue.main.async {
+                        self.rapidDecCount += 1
+                    }
+                }
+            }
+            
+            let drivingRecord = DrivingRecord(location: location, speed: currentSpeed, deviation: deviation, time: Date(), rapidAcc: rapidAcc, rapidDec: rapidDec)
+            
+            drivingRecordArray.append(drivingRecord)
+            
+            print("drivingRecordArray", drivingRecordArray)
+            
+            let lowSpeed = speedArray.min()
+            let highSpeed = speedArray.max()
+            
             DispatchQueue.main.async {
                 self.minSpeedLabel = (String(format: "%.0f km/h", lowSpeed!))
                 self.maxSpeedLabel = (String(format: "%.0f km/h", highSpeed!))
             }
+            
             avgSpeed()
-            //print("Low: \(lowSpeed!) - High: \(highSpeed!)")
+            print("Low: \(lowSpeed!) - High: \(highSpeed!)")
         } else {
             DispatchQueue.main.async {
                 self.speedDisplay = "0 km/h"
             }
         }
-
+        
         DispatchQueue.main.async {
-        // Shows the N - E - S W
+            // Shows the N - E - S W
             self.headingDisplay = "\(dir)"
             print("\(self.headingDisplay)")
         }
     }
-
+    
     func avgSpeed() {
-        let speed:[Double] = arrayKPH
+        let speed:[Double] = speedArray
         let speedAvg = speed.reduce(0, +) / Double(speed.count)
         DispatchQueue.main.async {
             self.avgSpeedLabel = (String(format: "%.0f", speedAvg))
         }
     }
-
+    
+    func startTrip() {
+        print(#function)
+        self.locationManager.delegate = self
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func endTrip() {
+        print(#function)
+        locationManager.stopUpdatingLocation()
+    }
+    
     func resetTrip() {
         self.locationManager.delegate = nil
-
-        arrayKPH = []
+        
+        drivingRecordArray = []
         traveledDistance = 0
         
         DispatchQueue.main.async {
@@ -145,18 +202,5 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.avgSpeedLabel = "0"
         }
     }
-
-    func startTrip() {
-        print(#function)
-        self.locationManager.delegate = self
-
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.startUpdatingLocation()
-        }
-    }
-
-    func endTrip() {
-        print(#function)
-        locationManager.stopUpdatingLocation()
-    }
+    
 }
