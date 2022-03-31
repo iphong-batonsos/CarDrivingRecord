@@ -1,5 +1,5 @@
 //
-//  SpeedRecordView.swift
+//  DrivingRecordView.swift
 //  CarDrivingRecord
 //
 //  Created by Inpyo Hong on 2022/03/30.
@@ -8,17 +8,17 @@
 import SwiftUI
 import SwiftUICharts
 
-struct SpeedRecordView: View {
+struct DrivingRecordView: View {
     @EnvironmentObject var locationService: LocationService
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
             Spacer()
-                .frame(height: 10)
+                .frame(height: 20)
             
             HStack(alignment: .top) {
-                VStack(spacing: -4) {
+                VStack() {
                     HStack {
                         Spacer()
                         
@@ -68,48 +68,9 @@ struct SpeedRecordView: View {
     }
 }
 
-struct DrivingRecordRow: View {
-    let drivingData: DrivingRecord
-    var formatter: DateFormatter = DateFormatter()
-    
-    init(drivingData: DrivingRecord) {
-        self.formatter.dateFormat = "MMM d yyyy, h:mm a"
-        self.drivingData = drivingData
-        print("Loading row \(drivingData)")
-    }
-    
-    var body: some View {
-        VStack {
-            HStack(alignment: .center, spacing: 10) {
-                
-                Text(formatter.string(from: drivingData.time))
-                Text("\(String(format: "%.0f", drivingData.speed)) km/h")
-                
-                if drivingData.rapidAcc {
-                    Text("급가속")
-                        .foregroundColor(.red)
-                        .fontWeight(.semibold)
-                }
-                
-                if drivingData.rapidDec {
-                    Text("급감속")
-                        .foregroundColor(.red)
-                        .fontWeight(.semibold)
-                }
-                
-                Spacer()
-            }
-            Divider()
-        }
-        .frame(width: UIScreen.main.bounds.width - 20, height: 40)
-    }
-    
-}
-
-
-struct SpeedRecordView_Previews: PreviewProvider {
+struct DrivingRecordView_Previews: PreviewProvider {
     static var previews: some View {
-        SpeedRecordView()
+        DrivingRecordView()
             .environmentObject(LocationService())
     }
 }

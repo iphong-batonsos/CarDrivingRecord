@@ -12,6 +12,7 @@ struct Location: Hashable, Identifiable, Codable {
     
     let latitude: Double
     let longitude: Double
+    let address: String
 }
 
 struct DrivingRecord: Hashable, Identifiable, Codable {

@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E2B66BC27F53F2600194572 /* DrivingRecordRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2B66BB27F53F2600194572 /* DrivingRecordRow.swift */; };
+		2E2B66BE27F5670F00194572 /* Locationconverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2B66BD27F5670F00194572 /* Locationconverter.swift */; };
 		2E2FE58A27F4175200938F33 /* CarDrivingRecordApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE58927F4175200938F33 /* CarDrivingRecordApp.swift */; };
 		2E2FE58C27F4175200938F33 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE58B27F4175200938F33 /* ContentView.swift */; };
 		2E2FE58E27F4175400938F33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E2FE58D27F4175400938F33 /* Assets.xcassets */; };
 		2E2FE59127F4175400938F33 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E2FE59027F4175400938F33 /* Preview Assets.xcassets */; };
 		2E2FE59827F417C400938F33 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE59727F417C400938F33 /* LocationService.swift */; };
 		2E2FE59D27F41BF500938F33 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE59C27F41BF500938F33 /* ViewModel.swift */; };
-		2E2FE5BB27F42D6300938F33 /* SpeedRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE5BA27F42D6300938F33 /* SpeedRecordView.swift */; };
+		2E2FE5BB27F42D6300938F33 /* DrivingRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE5BA27F42D6300938F33 /* DrivingRecordView.swift */; };
 		2E2FE5BD27F42F7A00938F33 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2FE5BC27F42F7A00938F33 /* Model.swift */; };
 		2E5A4C4427F456E50058AA1B /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 2E5A4C4327F456E50058AA1B /* SwiftUICharts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2E2B66BB27F53F2600194572 /* DrivingRecordRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrivingRecordRow.swift; sourceTree = "<group>"; };
+		2E2B66BD27F5670F00194572 /* Locationconverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locationconverter.swift; sourceTree = "<group>"; };
 		2E2FE58627F4175200938F33 /* CarDrivingRecord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarDrivingRecord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E2FE58927F4175200938F33 /* CarDrivingRecordApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarDrivingRecordApp.swift; sourceTree = "<group>"; };
 		2E2FE58B27F4175200938F33 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -27,7 +31,7 @@
 		2E2FE59727F417C400938F33 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		2E2FE59B27F41B6E00938F33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2E2FE59C27F41BF500938F33 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		2E2FE5BA27F42D6300938F33 /* SpeedRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedRecordView.swift; sourceTree = "<group>"; };
+		2E2FE5BA27F42D6300938F33 /* DrivingRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrivingRecordView.swift; sourceTree = "<group>"; };
 		2E2FE5BC27F42F7A00938F33 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,9 +87,10 @@
 		2E2FE59927F41B4400938F33 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				2E2FE59727F417C400938F33 /* LocationService.swift */,
-				2E2FE59C27F41BF500938F33 /* ViewModel.swift */,
 				2E2FE5BC27F42F7A00938F33 /* Model.swift */,
+				2E2FE59727F417C400938F33 /* LocationService.swift */,
+				2E2B66BD27F5670F00194572 /* Locationconverter.swift */,
+				2E2FE59C27F41BF500938F33 /* ViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -94,7 +99,8 @@
 			isa = PBXGroup;
 			children = (
 				2E2FE58B27F4175200938F33 /* ContentView.swift */,
-				2E2FE5BA27F42D6300938F33 /* SpeedRecordView.swift */,
+				2E2FE5BA27F42D6300938F33 /* DrivingRecordView.swift */,
+				2E2B66BB27F53F2600194572 /* DrivingRecordRow.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -178,9 +184,11 @@
 				2E2FE58C27F4175200938F33 /* ContentView.swift in Sources */,
 				2E2FE59827F417C400938F33 /* LocationService.swift in Sources */,
 				2E2FE59D27F41BF500938F33 /* ViewModel.swift in Sources */,
+				2E2B66BE27F5670F00194572 /* Locationconverter.swift in Sources */,
 				2E2FE5BD27F42F7A00938F33 /* Model.swift in Sources */,
+				2E2B66BC27F53F2600194572 /* DrivingRecordRow.swift in Sources */,
 				2E2FE58A27F4175200938F33 /* CarDrivingRecordApp.swift in Sources */,
-				2E2FE5BB27F42D6300938F33 /* SpeedRecordView.swift in Sources */,
+				2E2FE5BB27F42D6300938F33 /* DrivingRecordView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +322,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarDrivingRecord/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -346,6 +355,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarDrivingRecord/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

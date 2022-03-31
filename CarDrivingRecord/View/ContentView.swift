@@ -56,7 +56,7 @@ struct ContentView: View {
                     showingSheet.toggle()
                 }
                 .sheet(isPresented: $showingSheet) {
-                    SpeedRecordView()
+                    DrivingRecordView()
                         .environmentObject(locationService)
                 }
                 

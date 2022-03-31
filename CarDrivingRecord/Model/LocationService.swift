@@ -94,12 +94,31 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         let val = ((direction / 22.5) + 0.5);
         let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         let dir = arr[Int(val.truncatingRemainder(dividingBy: 16))]
-        
+        var addressStr = ""
+
         //        lonDisplay = coordinateString(latitude, longitude: longitude)
         
         DispatchQueue.main.async {
             self.lonDisplay = (String(format: "%.3f", longitude))
             self.latDisplay = (String(format: "%.3f", latitude))
+        }
+        
+        let converter: LocationConverter = LocationConverter()
+        let (x, y): (Int, Int)
+            = converter.convertGrid(lon: longitude, lat: latitude)
+        
+        let findLocation: CLLocation = CLLocation(latitude: latitude, longitude: longitude)
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let local: Locale = Locale(identifier: "Ko-kr") // Korea
+        
+            
+        geoCoder.reverseGeocodeLocation(findLocation, preferredLocale: local) { (place, error) in
+            if let address: [CLPlacemark] = place {
+                guard let addressData = address.last else { return }
+                print("(longitude, latitude) = (\(x), \(y))")
+                addressStr = "\(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)"
+                print("위치: \(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)")
+            }
         }
         
         print("\(self.lonDisplay), \(self.latDisplay)")
@@ -108,7 +127,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         if (currentSpeed > 0) {
             speedDisplay = (String(format: "%.0f km/h", currentSpeed))
             
-            let location = Location(latitude: latitude, longitude: longitude)
+            let location = Location(latitude: latitude, longitude: longitude, address: addressStr)
             
             var deviation: Double = 0
             var rapidAcc: Bool = false
@@ -164,7 +183,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         let speed:[Double] = speedArray
         let speedAvg = speed.reduce(0, +) / Double(speed.count)
         DispatchQueue.main.async {
-            self.avgSpeedLabel = (String(format: "%.0f", speedAvg))
+            self.avgSpeedLabel = (String(format: "%.0f km/h", speedAvg))
         }
     }
     
@@ -199,6 +218,5 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.distanceTraveled = "0"
             self.avgSpeedLabel = "0"
         }
-    }
-    
+    }    
 }
