@@ -32,15 +32,11 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var avgSpeedLabel: String = ""
     
     @Published var rapidSpeed: Int = 10
-    
+
     override init() {
         super.init()
         
-        DispatchQueue.main.async {
-            self.minSpeedLabel = "0"
-            self.maxSpeedLabel = "0"
-            self.distanceTraveled = "0"
-        }
+        initString()
         
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()
@@ -55,6 +51,19 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         // For use in foreground
         self.locationManager.requestWhenInUseAuthorization()
+    }
+    
+    fileprivate func initString() {
+        DispatchQueue.main.async {
+            self.lonDisplay = "-"
+            self.latDisplay = "-"
+            self.minSpeedLabel = "0"
+            self.maxSpeedLabel = "0"
+            self.headingDisplay = "None"
+            self.speedDisplay = "0"
+            self.distanceTraveled = "0"
+            self.avgSpeedLabel = "0"
+        }
     }
     
     // 1 mile = 5280 feet
@@ -211,15 +220,6 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         traveledDistance = 0
         rapidSpeed = 10
         
-        DispatchQueue.main.async {
-            self.lonDisplay = ""
-            self.latDisplay = ""
-            self.minSpeedLabel = "0"
-            self.maxSpeedLabel = "0"
-            self.headingDisplay = "None"
-            self.speedDisplay = "0"
-            self.distanceTraveled = "0"
-            self.avgSpeedLabel = "0"
-        }
+        initString()
     }
 }
