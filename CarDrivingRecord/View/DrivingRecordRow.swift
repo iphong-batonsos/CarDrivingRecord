@@ -10,20 +10,14 @@ import SwiftUI
 struct DrivingRecordRow: View {
     let drivingData: DrivingRecord
     var formatter: DateFormatter = DateFormatter()
-    @State private var rapidSpeed = ""
     
     init(drivingData: DrivingRecord) {
         self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         self.formatter.locale = Locale(identifier: "ko_kr")
         self.formatter.timeZone = TimeZone(abbreviation: "KST")
         self.drivingData = drivingData
-        print("Loading row \(drivingData)")
         
-        if drivingData.rapidAcc {
-            rapidSpeed = "급가속"
-        } else if drivingData.rapidDec {
-            rapidSpeed = "급감속"
-        }
+        print("Loading row \(drivingData)")
     }
     
     var body: some View {
@@ -62,17 +56,27 @@ struct DrivingRecordRow: View {
                             }
                             .font(.system(size: 16, weight: .semibold, design: .default))
                         }
-                        
-                        
                     }
                 }
                 
                 Spacer().frame(width: 20)
                 
-                if self.rapidSpeed.count > 0 {
-                    Text(self.rapidSpeed)
+                if drivingData.deviationType == .acceleration {
+                    Text("급가속")
                         .fontWeight(.bold)
-                        .font(.subheadline)
+                        .font(.title2)
+                        .foregroundColor(.red)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.red, lineWidth: 5)
+                        )
+                }
+                
+                if drivingData.deviationType == .deceleration {
+                    Text("급감속")
+                        .fontWeight(.bold)
+                        .font(.title2)
                         .foregroundColor(.red)
                         .padding()
                         .overlay(
@@ -89,14 +93,13 @@ struct DrivingRecordRow: View {
 
             Divider()
         }
-        .frame(width: UIScreen.main.bounds.width - 20, height: 40)
+        .frame(width: UIScreen.main.bounds.width - 20)
     }
     
 }
 
 struct DrivingRecordRow_Previews: PreviewProvider {
     static var previews: some View {
-        DrivingRecordRow(drivingData: DrivingRecord(location: Location(latitude: 37.404, longitude: 127.106, address: "경기도 성남시 삼평동 398"), speed: 44, deviation: 0, time: Date(), rapidAcc: true, rapidDec: false))
-            .previewDevice("iPhone SE (3rd generation)")
+        DrivingRecordRow(drivingData: DrivingRecord(location: Location(latitude: 37.404, longitude: 127.106, address: "경기도 성남시 삼평동 400"), speed: 44, deviation: 0, time: Date(), deviationType: .acceleration))
     }
 }

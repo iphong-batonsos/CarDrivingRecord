@@ -15,6 +15,12 @@ struct Location: Hashable, Identifiable, Codable {
     let address: String
 }
 
+enum DeviationType: Codable {
+  case normal
+  case acceleration
+  case deceleration
+}
+
 struct DrivingRecord: Hashable, Identifiable, Codable {
     var id = UUID()
     
@@ -26,7 +32,5 @@ struct DrivingRecord: Hashable, Identifiable, Codable {
 
     let time: Date
     
-    let rapidAcc: Bool
-    
-    let rapidDec: Bool
+    let deviationType: DeviationType
 }

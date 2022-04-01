@@ -47,19 +47,10 @@ struct ContentView: View {
                     Text("급가속 횟수 \(locationService.rapidAccCount)")
 
                     Text("급감속 횟수 \(locationService.rapidDecCount)")
-
                 }
                 .font(.system(size: 18, weight: .semibold, design: .default))
                 .padding([.top, .bottom])
-                
-                Button("운행 기록 그래프") {
-                    showingSheet.toggle()
-                }
-                .sheet(isPresented: $showingSheet) {
-                    DrivingRecordView()
-                        .environmentObject(locationService)
-                }
-                
+                                
                 Button {
                     locationService.startTrip()
                 } label: {
@@ -70,6 +61,15 @@ struct ContentView: View {
                     locationService.endTrip()
                 } label: {
                     Text("운전 종료")
+                        .foregroundColor(.red)
+                }
+                
+                Button("운행 기록") {
+                    showingSheet.toggle()
+                }
+                .sheet(isPresented: $showingSheet) {
+                    DrivingRecordView()
+                        .environmentObject(locationService)
                 }
                 
                 Button {

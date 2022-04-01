@@ -17,7 +17,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var traveledDistance: Double = 0
     @Published var drivingRecordArray: [DrivingRecord] = []
     @Published var speedArray: [Double]! = []
-
+    @Published var deviationArray: [Double]! = []
+    
     @Published var rapidAccCount: Int = 0
     @Published var rapidDecCount: Int = 0
     
@@ -38,6 +39,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         DispatchQueue.main.async {
             self.minSpeedLabel = "0"
             self.maxSpeedLabel = "0"
+            self.distanceTraveled = "0"
         }
         
         // Ask for Authorisation from the User.
@@ -71,7 +73,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             updateLocationInfo(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, speed: location!.speed, direction: location!.course)
         }
         
-        if lastLocation != nil {
+        if lastLocation != nil && location!.speed > 0 {
             traveledDistance += lastLocation.distance(from: locations.last!)
             if traveledDistance < 1609 {
                 let tdMeter = traveledDistance
@@ -94,8 +96,17 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         let val = ((direction / 22.5) + 0.5);
         let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         let dir = arr[Int(val.truncatingRemainder(dividingBy: 16))]
+        var deviationType: DeviationType = .normal
+        var deviation: Double = 0
         var addressStr = ""
-
+        let converter: LocationConverter = LocationConverter()
+        let (x, y): (Int, Int)
+        = converter.convertGrid(lon: longitude, lat: latitude)
+        
+        let findLocation: CLLocation = CLLocation(latitude: latitude, longitude: longitude)
+        let geoCoder: CLGeocoder = CLGeocoder()
+        let local: Locale = Locale(identifier: "Ko-kr") // Korea
+        
         //        lonDisplay = coordinateString(latitude, longitude: longitude)
         
         DispatchQueue.main.async {
@@ -103,80 +114,69 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.latDisplay = (String(format: "%.3f", latitude))
         }
         
-        let converter: LocationConverter = LocationConverter()
-        let (x, y): (Int, Int)
-            = converter.convertGrid(lon: longitude, lat: latitude)
-        
-        let findLocation: CLLocation = CLLocation(latitude: latitude, longitude: longitude)
-        let geoCoder: CLGeocoder = CLGeocoder()
-        let local: Locale = Locale(identifier: "Ko-kr") // Korea
-        
-            
-        geoCoder.reverseGeocodeLocation(findLocation, preferredLocale: local) { (place, error) in
-            if let address: [CLPlacemark] = place {
-                guard let addressData = address.last else { return }
-                print("(longitude, latitude) = (\(x), \(y))")
-                addressStr = "\(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)"
-                print("위치: \(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)")
-            }
-        }
-        
         print("\(self.lonDisplay), \(self.latDisplay)")
-        
-        // Checking if speed is less than zero
-        if (currentSpeed > 0) {
-            speedDisplay = (String(format: "%.0f km/h", currentSpeed))
-            
-            let location = Location(latitude: latitude, longitude: longitude, address: addressStr)
-            
-            var deviation: Double = 0
-            var rapidAcc: Bool = false
-            var rapidDec: Bool = false
-            
-            if let lastSpeed = speedArray.last {
-                deviation = currentSpeed - lastSpeed
-                
-                if deviation >= Double(self.rapidSpeed) {
-                    rapidAcc = true
-                    DispatchQueue.main.async {
-                        self.rapidAccCount += 1
-                    }
-                } else if deviation <= Double(-self.rapidSpeed) {
-                    rapidDec = true
-                    DispatchQueue.main.async {
-                        self.rapidDecCount += 1
-                    }
-                }
-            }
-            
-            let drivingRecord = DrivingRecord(location: location, speed: currentSpeed, deviation: deviation, time: Date(), rapidAcc: rapidAcc, rapidDec: rapidDec)
-            
-            drivingRecordArray.append(drivingRecord)
-            speedArray.append(currentSpeed)
-            
-            print("drivingRecordArray", drivingRecordArray)
-            
-            let lowSpeed = speedArray.min()
-            let highSpeed = speedArray.max()
-            
-            DispatchQueue.main.async {
-                self.minSpeedLabel = (String(format: "%.0f km/h", lowSpeed!))
-                self.maxSpeedLabel = (String(format: "%.0f km/h", highSpeed!))
-            }
-            
-            avgSpeed()
-            print("Low: \(lowSpeed!) - High: \(highSpeed!)")
-        } else {
-            DispatchQueue.main.async {
-                self.speedDisplay = "0 km/h"
-            }
-        }
         
         DispatchQueue.main.async {
             // Shows the N - E - S W
             self.headingDisplay = "\(dir)"
             print("\(self.headingDisplay)")
         }
+        
+        // Checking if speed is less than zero
+       // if (currentSpeed > 0) {
+            speedDisplay = (String(format: "%.0f km/h", currentSpeed))
+            
+            geoCoder.reverseGeocodeLocation(findLocation, preferredLocale: local) { [weak self] (place, error) in
+                guard let self = self else { return }
+                
+                if let address: [CLPlacemark] = place {
+                    guard let addressData = address.last else { return }
+                    print("(longitude, latitude) = (\(x), \(y))")
+                    addressStr = "\(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)"
+                    print("위치: \(addressStr)")
+                    
+                    if let lastSpeed = self.speedArray.last {
+                        deviation = currentSpeed - lastSpeed
+                        
+                        if deviation >= Double(self.rapidSpeed) {
+                            DispatchQueue.main.async {
+                                self.rapidAccCount += 1
+                                deviationType = .acceleration
+                            }
+                        } else if deviation <= Double(-self.rapidSpeed) {
+                            DispatchQueue.main.async {
+                                self.rapidDecCount += 1
+                                deviationType = .deceleration
+                            }
+                        }
+                    }
+                    
+                    let location = Location(latitude: latitude, longitude: longitude, address: addressStr)
+                    let drivingRecord = DrivingRecord(location: location, speed: currentSpeed, deviation: deviation, time: Date(), deviationType: deviationType)
+                    
+                    self.drivingRecordArray.append(drivingRecord)
+                    self.speedArray.append(currentSpeed)
+                    self.deviationArray.append(deviation)
+                    
+                    let lowSpeed = self.speedArray.min()
+                    let highSpeed = self.speedArray.max()
+                    
+                    DispatchQueue.main.async {
+                        self.minSpeedLabel = (String(format: "%.0f km/h", lowSpeed!))
+                        self.maxSpeedLabel = (String(format: "%.0f km/h", highSpeed!))
+                    }
+                    
+                    self.avgSpeed()
+                    print("Low: \(lowSpeed!) - High: \(highSpeed!)")
+
+                }
+            }
+            
+//        } else {
+//            DispatchQueue.main.async {
+//                self.speedDisplay = "0 km/h"
+//            }
+//        }
     }
     
     func avgSpeed() {
@@ -205,6 +205,9 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.delegate = nil
         
         drivingRecordArray = []
+        speedArray = []
+        deviationArray = []
+        
         traveledDistance = 0
         rapidSpeed = 10
         
@@ -218,5 +221,5 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.distanceTraveled = "0"
             self.avgSpeedLabel = "0"
         }
-    }    
+    }
 }

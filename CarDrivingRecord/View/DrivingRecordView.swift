@@ -40,10 +40,9 @@ struct DrivingRecordView: View {
                 }
             }
             
-            if locationService.speedArray.count > 0 {
+            if locationService.drivingRecordArray.count > 0 {
                 ScrollView {
-                    
-                    LineView(data: locationService.speedArray, title: "") // legend is optional, use optional .padding()
+                    LineView(data: locationService.deviationArray, title: "속도 편차") // legend is optional, use optional .padding()
                         .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .topLeading)
                     Divider()
                         .padding()
