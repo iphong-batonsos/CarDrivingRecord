@@ -123,7 +123,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
         
         // Checking if speed is less than zero
-       // if (currentSpeed > 0) {
+        if (currentSpeed > 0) {
             speedDisplay = (String(format: "%.0f km/h", currentSpeed))
             
             geoCoder.reverseGeocodeLocation(findLocation, preferredLocale: local) { [weak self] (place, error) in
@@ -168,15 +168,15 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                     
                     self.avgSpeed()
                     print("Low: \(lowSpeed!) - High: \(highSpeed!)")
-
+                    
                 }
             }
             
-//        } else {
-//            DispatchQueue.main.async {
-//                self.speedDisplay = "0 km/h"
-//            }
-//        }
+        } else {
+            DispatchQueue.main.async {
+                self.speedDisplay = "0 km/h"
+            }
+        }
     }
     
     func avgSpeed() {
