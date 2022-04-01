@@ -15,8 +15,8 @@ struct Location: Hashable, Identifiable, Codable {
     let address: String
 }
 
-enum DeviationType: Codable {
-  case normal
+enum DeviationType: Int, Codable {
+  case normal = 0
   case acceleration
   case deceleration
 }

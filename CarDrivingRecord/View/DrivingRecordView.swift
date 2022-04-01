@@ -42,8 +42,9 @@ struct DrivingRecordView: View {
             
             if locationService.drivingRecordArray.count > 0 {
                 ScrollView {
-                    LineView(data: locationService.deviationArray, title: "속도 편차") // legend is optional, use optional .padding()
-                        .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .topLeading)
+                    MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.bluPurpl), (locationService.deviationTypeArray, GradientColors.orngPink)], title: "속도 편차")
+                        .padding()
+
                     Divider()
                         .padding()
                     

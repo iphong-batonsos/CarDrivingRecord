@@ -18,7 +18,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var drivingRecordArray: [DrivingRecord] = []
     @Published var speedArray: [Double]! = []
     @Published var deviationArray: [Double]! = []
-    
+    @Published var deviationTypeArray: [Double]! = []
+
     @Published var rapidAccCount: Int = 0
     @Published var rapidDecCount: Int = 0
     
@@ -132,7 +133,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
         
         // Checking if speed is less than zero
-        if (currentSpeed > 0) {
+       // if (currentSpeed > 0) {
             speedDisplay = (String(format: "%.0f km/h", currentSpeed))
             
             geoCoder.reverseGeocodeLocation(findLocation, preferredLocale: local) { [weak self] (place, error) in
@@ -166,6 +167,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.drivingRecordArray.append(drivingRecord)
                     self.speedArray.append(currentSpeed)
                     self.deviationArray.append(deviation)
+                    self.deviationTypeArray.append(Double(deviationType.rawValue))
                     
                     let lowSpeed = self.speedArray.min()
                     let highSpeed = self.speedArray.max()
@@ -181,11 +183,11 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                 }
             }
             
-        } else {
-            DispatchQueue.main.async {
-                self.speedDisplay = "0 km/h"
-            }
-        }
+//        } else {
+//            DispatchQueue.main.async {
+//                self.speedDisplay = "0 km/h"
+//            }
+//        }
     }
     
     func avgSpeed() {
