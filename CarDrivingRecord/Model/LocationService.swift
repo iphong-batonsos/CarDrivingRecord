@@ -167,6 +167,8 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.drivingRecordArray.append(drivingRecord)
                     self.speedArray.append(currentSpeed)
                     self.deviationArray.append(deviation)
+                    
+                    print("deviationType", Double(deviationType.rawValue))
                     self.deviationTypeArray.append(Double(deviationType.rawValue))
                     
                     let lowSpeed = self.speedArray.min()

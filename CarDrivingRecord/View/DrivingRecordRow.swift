@@ -59,18 +59,14 @@ struct DrivingRecordRow: View {
                     }
                 }
                 
-                Spacer().frame(width: 20)
+                Spacer().frame(width: 10)
                 
                 if drivingData.deviationType == .acceleration {
                     Text("급가속")
                         .fontWeight(.bold)
                         .font(.title2)
-                        .foregroundColor(.red)
+                        .foregroundColor(.orange)
                         .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.red, lineWidth: 5)
-                        )
                 }
                 
                 if drivingData.deviationType == .deceleration {
@@ -79,10 +75,6 @@ struct DrivingRecordRow: View {
                         .font(.title2)
                         .foregroundColor(.red)
                         .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.red, lineWidth: 5)
-                        )
                 }
                 
                 Spacer()

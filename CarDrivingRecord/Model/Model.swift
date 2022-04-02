@@ -16,9 +16,9 @@ struct Location: Hashable, Identifiable, Codable {
 }
 
 enum DeviationType: Int, Codable {
+  case acceleration = -300
   case normal = 0
-  case acceleration
-  case deceleration
+  case deceleration = 300
 }
 
 struct DrivingRecord: Hashable, Identifiable, Codable {

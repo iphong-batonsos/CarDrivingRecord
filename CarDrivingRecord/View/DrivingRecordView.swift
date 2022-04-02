@@ -35,24 +35,33 @@ struct DrivingRecordView: View {
                             .frame(width: 20, height: 20)
                     }
                     
-                    Text("운행 기록 그래프")
+                    Text("운행 기록")
                         .font(.system(size: 24, weight: .bold, design: .default))
                 }
             }
             
             if locationService.drivingRecordArray.count > 0 {
                 ScrollView {
-                    MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.bluPurpl), (locationService.deviationTypeArray, GradientColors.orngPink)], title: "속도 편차")
+                    LazyVStack{
+                        VStack(spacing: 10) {
+                            MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.orngPink)], title: "속도 편차",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80))
+                            
+                            Divider()
+                                .padding()
+                            
+                            LineChartView(data: locationService.deviationTypeArray, title: "급가속/급감속",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80))
+                        }
                         .padding()
-
+                    }
+                    
                     Divider()
                         .padding()
                     
-                    LazyVStack {
-                        ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
-                    }
-                    
-                    Spacer()
+//                    LazyVStack {
+//                        ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
+//                    }
+//
+//                    Spacer()
                 }
             }
             else{
