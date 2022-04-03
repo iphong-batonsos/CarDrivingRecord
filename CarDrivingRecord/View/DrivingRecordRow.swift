@@ -50,7 +50,7 @@ struct DrivingRecordRow: View {
                         
                         VStack {
                             HStack(alignment: .top, spacing: 4) {
-                                Text("속도 편차")
+                                Text("편차")
                                     .foregroundColor(.gray)
                                 Text("\(String(format: "%.0f", drivingData.deviation)) km/h")
                             }
@@ -65,7 +65,7 @@ struct DrivingRecordRow: View {
                     Text("급가속")
                         .fontWeight(.bold)
                         .font(.title2)
-                        .foregroundColor(.orange)
+                        .foregroundColor(.red)
                         .padding()
                 }
                 
@@ -73,7 +73,7 @@ struct DrivingRecordRow: View {
                     Text("급감속")
                         .fontWeight(.bold)
                         .font(.title2)
-                        .foregroundColor(.red)
+                        .foregroundColor(.blue)
                         .padding()
                 }
                 

@@ -18,7 +18,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var drivingRecordArray: [DrivingRecord] = []
     @Published var speedArray: [Double]! = []
     @Published var deviationArray: [Double]! = []
-    @Published var deviationTypeArray: [Double]! = []
+    @Published var deviationTypeArray: [Double] = []
 
     @Published var rapidAccCount: Int = 0
     @Published var rapidDecCount: Int = 0
@@ -102,12 +102,13 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func updateLocationInfo(latitude: CLLocationDegrees, longitude: CLLocationDegrees, speed: CLLocationSpeed, direction: CLLocationDirection) {
-        let currentSpeed = (speed * 3.6)
+        var currentSpeed = (speed * 3.6)
         let val = ((direction / 22.5) + 0.5);
         let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         let dir = arr[Int(val.truncatingRemainder(dividingBy: 16))]
-        var deviationType: DeviationType = .normal
         var deviation: Double = 0
+        var deviationType: DeviationType = .normal
+
         var addressStr = ""
         let converter: LocationConverter = LocationConverter()
         let (x, y): (Int, Int)
@@ -144,21 +145,28 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                     print("(longitude, latitude) = (\(x), \(y))")
                     addressStr = "\(addressData.administrativeArea!) \(addressData.locality!) \(addressData.name!)"
                     print("위치: \(addressStr)")
-                    
+
                     if let lastSpeed = self.speedArray.last {
                         deviation = currentSpeed - lastSpeed
-                        
+
                         if deviation >= Double(self.rapidSpeed) {
                             DispatchQueue.main.async {
                                 self.rapidAccCount += 1
-                                deviationType = .acceleration
                             }
+                            
+                            deviationType = .acceleration
+
                         } else if deviation <= Double(-self.rapidSpeed) {
                             DispatchQueue.main.async {
                                 self.rapidDecCount += 1
-                                deviationType = .deceleration
                             }
+                            
+                            deviationType = .deceleration
+
                         }
+                        print("deviationType", Double(deviationType.rawValue))
+                        self.deviationTypeArray.append(Double(deviationType.rawValue))
+                        print("self.deviationTypeArray", self.deviationTypeArray)
                     }
                     
                     let location = Location(latitude: latitude, longitude: longitude, address: addressStr)
@@ -167,9 +175,6 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.drivingRecordArray.append(drivingRecord)
                     self.speedArray.append(currentSpeed)
                     self.deviationArray.append(deviation)
-                    
-                    print("deviationType", Double(deviationType.rawValue))
-                    self.deviationTypeArray.append(Double(deviationType.rawValue))
                     
                     let lowSpeed = self.speedArray.min()
                     let highSpeed = self.speedArray.max()

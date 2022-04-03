@@ -42,14 +42,17 @@ struct DrivingRecordView: View {
             
             if locationService.drivingRecordArray.count > 0 {
                 ScrollView {
-                    LazyVStack{
-                        VStack(spacing: 10) {
-                            MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.orngPink)], title: "속도 편차",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80))
-                            
-                            Divider()
-                                .padding()
-                            
-                            LineChartView(data: locationService.deviationTypeArray, title: "급가속/급감속",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80))
+                    LazyVStack() {
+                        VStack(alignment: .leading) {
+                           
+                            VStack(spacing: 10) {
+                                MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.orngPink)], title: "속도/편차",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80), rateValue: nil)
+                                
+                                Divider()
+                                    .padding()
+                                
+                                LineChartView(data: locationService.deviationTypeArray, title: "급가속/급감속",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80),rateValue: nil)
+                        }
                         }
                         .padding()
                     }
@@ -57,11 +60,11 @@ struct DrivingRecordView: View {
                     Divider()
                         .padding()
                     
-//                    LazyVStack {
-//                        ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
-//                    }
-//
-//                    Spacer()
+                    LazyVStack {
+                        ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
+                    }
+
+                    Spacer()
                 }
             }
             else{
