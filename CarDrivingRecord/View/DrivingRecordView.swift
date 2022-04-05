@@ -44,7 +44,7 @@ struct DrivingRecordView: View {
                 ScrollView {
                     LazyVStack() {
                         VStack(alignment: .leading) {
-                           
+                            
                             VStack(spacing: 10) {
                                 MultiLineChartView(data: [(locationService.speedArray, GradientColors.green), (locationService.deviationArray, GradientColors.orngPink)], title: "속도/편차",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80), rateValue: nil)
                                 
@@ -52,7 +52,7 @@ struct DrivingRecordView: View {
                                     .padding()
                                 
                                 LineChartView(data: locationService.deviationTypeArray, title: "급가속/급감속",form: CGSize(width: UIScreen.main.bounds.width - 40, height: 80),rateValue: nil)
-                        }
+                            }
                         }
                         .padding()
                     }
@@ -63,7 +63,7 @@ struct DrivingRecordView: View {
                     LazyVStack {
                         ForEach(locationService.drivingRecordArray, id: \.self, content: DrivingRecordRow.init)
                     }
-
+                    
                     Spacer()
                 }
             }

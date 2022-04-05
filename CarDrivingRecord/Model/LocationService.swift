@@ -102,7 +102,7 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func updateLocationInfo(latitude: CLLocationDegrees, longitude: CLLocationDegrees, speed: CLLocationSpeed, direction: CLLocationDirection) {
-        var currentSpeed = (speed * 3.6)
+        let currentSpeed = (speed * 3.6)
         let val = ((direction / 22.5) + 0.5);
         let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         let dir = arr[Int(val.truncatingRemainder(dividingBy: 16))]
@@ -227,6 +227,9 @@ class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         traveledDistance = 0
         rapidSpeed = 10
+        
+        rapidAccCount = 0
+        rapidDecCount = 0
         
         initString()
     }

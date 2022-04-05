@@ -14,7 +14,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("자동차 운전 기록")
+            Text("안심 운전 테스트")
                 .font(.system(size: 24, weight: .bold, design: .default))
                 .padding()
             
